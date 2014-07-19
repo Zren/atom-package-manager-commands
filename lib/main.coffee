@@ -65,12 +65,13 @@ PackageManagerCommands =
 
 module.exports =
   activate: (state) ->
-    atom.workspaceView.command 'package-manager:enable-package', => @openEnablePackageMenu()
-    atom.workspaceView.command 'package-manager:reload-package', => @openReloadPackageMenu()
-    atom.workspaceView.command 'package-manager:disable-package', => @openDisablePackageMenu()
-
     if getProjectPackage()
       atom.workspaceView.command 'package-manager:reload-project-package', => @reloadProjectPackage()
+
+    atom.workspaceView.command 'package-manager:enable-package', => @openEnablePackageMenu()
+    atom.workspaceView.command 'package-manager:disable-package', => @openDisablePackageMenu()
+    atom.workspaceView.command 'package-manager:reload-package', => @openReloadPackageMenu()
+
 
   deactivate: ->
 
