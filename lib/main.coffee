@@ -30,9 +30,22 @@ clearModuleCache = (modulePath) ->
       if delete Module._cache[path]
         console.log 'Deleted Module._cache["' + path + '"]'
 
-PackageManagerCommands =
-  reloadPackage: (packageName) ->
 
+getProjectPackage = ->
+  return false unless atom.project.path
+  projectPath = atom.project.path.toLowerCase()
+  packagePaths = _.pluck atom.packages.getLoadedPackages(), 'path'
+  packagePath = _.find packagePaths, (packagePath) ->
+    return packagePath if packagePath.toLowerCase() is projectPath
+  return _.findWhere atom.packages.getLoadedPackages(), {path: packagePath}
+
+PackageManagerCommands =
+  enablePackage: (packageName) ->
+    atom.packages.enablePackage(packageName)
+    console.log '[PackageManager] ', packageName, ' enabled.'
+
+  reloadPackage: (packageName) ->
+    console.log '[PackageManager] ', 'Reloading ', packageName
     pack = atom.packages.getLoadedPackage(packageName)
     packagePath = pack.path
     packageActive = atom.packages.isPackageActive(packageName)
@@ -43,6 +56,12 @@ PackageManagerCommands =
     atom.packages.loadPackage packageName
     if packageActive
       atom.packages.activatePackage packageName
+    console.log '[PackageManager] ', packageName, ' reloaded.'
+
+  disablePackage: (packageName) ->
+    atom.packages.disablePackage(packageName)
+    console.log '[PackageManager] ', packageName, ' disabled.'
+
 
 module.exports =
   activate: (state) ->
@@ -50,23 +69,27 @@ module.exports =
     atom.workspaceView.command 'package-manager:reload-package', => @openReloadPackageMenu()
     atom.workspaceView.command 'package-manager:disable-package', => @openDisablePackageMenu()
 
+    if getProjectPackage()
+      atom.workspaceView.command 'package-manager:reload-project-package', => @reloadProjectPackage()
+
   deactivate: ->
 
-  openEnablePackageMenu: =>
+  reloadProjectPackage: ->
+    pack = getProjectPackage()
+    return unless pack
+    PackageManagerCommands.reloadPackage(pack.name)
+
+  openEnablePackageMenu: ->
     PackageListView ?= require './package-list-view'
     new PackageListView getDisabledPackages(), (packageName) ->
-      atom.packages.enablePackage(packageName)
-      console.log '[PackageManager] ', packageName, ' enabled.'
+      PackageManagerCommands.enablePackage(packageName)
 
-  openReloadPackageMenu: =>
+  openReloadPackageMenu: ->
     PackageListView ?= require './package-list-view'
     new PackageListView atom.packages.getLoadedPackages(), (packageName) ->
-      console.log '[PackageManager] ', 'Reloading ', packageName
       PackageManagerCommands.reloadPackage(packageName)
-      console.log '[PackageManager] ', packageName, ' reloaded.'
 
-  openDisablePackageMenu: =>
+  openDisablePackageMenu: ->
     PackageListView ?= require './package-list-view'
     new PackageListView getEnabledPackages(), (packageName) ->
-      atom.packages.disablePackage(packageName)
-      console.log '[PackageManager] ', packageName, ' disabled.'
+      PackageManagerCommands.disablePackage(packageName)
