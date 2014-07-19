@@ -3,7 +3,7 @@
   "main": "./lib/main",
   "version": "0.0.0",
   "description": "Adds commands to enable/disable/reload a package from the command palette.",
-  "repo": "https://github.com/Zren/atom-package-manager-commands",
+  "repository": "https://github.com/Zren/atom-package-manager-commands",
   "license": "MIT",
   "engines": {
     "atom": ">=0.50.0"
