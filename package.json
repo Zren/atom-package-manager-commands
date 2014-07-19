@@ -1,0 +1,13 @@
+{
+  "name": "package-manager-commands",
+  "main": "./lib/main",
+  "version": "0.0.0",
+  "description": "Reload an Atom package without reloading the Atom window.",
+  "repo": "https://github.com/Zren/atom-package-manager-commands",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.50.0"
+  },
+  "dependencies": {
+  }
+}
