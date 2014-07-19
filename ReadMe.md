@@ -6,10 +6,18 @@ Adds commands to enable/disable/reload a package from the command palette.
 Commands
 --------
 
-* **Package Manager: Enabled Package** `package-manager:enable-package` Lists all disabled packages to enable.
-* **Package Manager: Disable Package** `package-manager:disable-package` Lists all enabled packages to disable.
-* **Package Manager: Reload Package** `package-manager:reload-package` Lists all loaded packages to reload.
-* **Package Manager: Reload Project Package** `package-manager:reload-project-package` Quick access to reload the current package being worked on. This command is only visible if the project root matches the package path.
+* **Package Manager: Enabled Package**
+  Lists all disabled packages to enable.  
+  `package-manager:enable-package`
+* **Package Manager: Disable Package**
+  Lists all enabled packages to disable.  
+  `package-manager:disable-package`
+* **Package Manager: Reload Package**
+  Lists all loaded packages to reload.  
+  `package-manager:reload-package`
+* **Package Manager: Reload Project Package**
+  Quick access to reload the current package being worked on. This command is only visible if the project root matches the package path.  
+  `package-manager:reload-project-package`
 
 How Does Reloading Work?
 ------------------------
