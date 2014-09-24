@@ -3,6 +3,9 @@ _ = require atom.packages.resourcePath + '/node_modules/underscore-plus'
 PackageListView = null
 Module = null
 
+configGet = (key) ->
+  return atom.config.get 'package-manager-commands.' + key
+
 getDisabledPackageNames = ->
   return atom.config.get('core.disabledPackages')
 
@@ -24,11 +27,11 @@ clearModuleCache = (modulePath) ->
   _.each require.cache, (module, path) ->
     if path.startsWith(modulePath)
       if delete require.cache[path]
-        console.log 'Deleted require.cache["' + path + '"]'
+        console.log 'Deleted require.cache["' + path + '"]' if configGet('logging') and configGet('logReloadedFiles')
   _.each Module._cache, (module, path) ->
     if path.startsWith(modulePath)
       if delete Module._cache[path]
-        console.log 'Deleted Module._cache["' + path + '"]'
+        console.log 'Deleted Module._cache["' + path + '"]' if configGet('logging') and configGet('logReloadedFiles')
 
 
 getProjectPackage = ->
@@ -42,10 +45,10 @@ getProjectPackage = ->
 PackageManagerCommands =
   enablePackage: (packageName) ->
     atom.packages.enablePackage(packageName)
-    console.log '[PackageManager] ', packageName, ' enabled.'
+    console.log '[PackageManager] ', packageName, ' enabled.' if configGet('logging')
 
   reloadPackage: (packageName) ->
-    console.log '[PackageManager] ', 'Reloading ', packageName
+    console.log '[PackageManager] ', 'Reloading ', packageName if configGet('logging')
     pack = atom.packages.getLoadedPackage(packageName)
     packagePath = pack.path
     packageActive = atom.packages.isPackageActive(packageName)
@@ -56,14 +59,18 @@ PackageManagerCommands =
     atom.packages.loadPackage packageName
     if packageActive
       atom.packages.activatePackage packageName
-    console.log '[PackageManager] ', packageName, ' reloaded.'
+    console.log '[PackageManager] ', packageName, ' reloaded.' if configGet('logging')
 
   disablePackage: (packageName) ->
     atom.packages.disablePackage(packageName)
-    console.log '[PackageManager] ', packageName, ' disabled.'
+    console.log '[PackageManager] ', packageName, ' disabled.' if configGet('logging')
 
 
 module.exports =
+  configDefaults:
+    logReloadedFiles: false
+    logging: false
+
   activate: (state) ->
     if getProjectPackage()
       atom.workspaceView.command 'package-manager:reload-project-package', => @reloadProjectPackage()
