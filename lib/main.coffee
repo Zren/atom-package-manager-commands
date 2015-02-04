@@ -1,7 +1,6 @@
 _ = require atom.packages.resourcePath + '/node_modules/underscore-plus'
 
 PackageListView = null
-Module = null
 
 configGet = (key) ->
   return atom.config.get 'package-manager-commands.' + key
@@ -22,7 +21,7 @@ isDisabledPackage = (packageName) ->
   return _.contains(getDisabledPackageNames(), packageName)
 
 clearModuleCache = (modulePath) ->
-  Module ?= module.constructor
+  Module = module.constructor
 
   _.each require.cache, (module, path) ->
     if path.startsWith(modulePath)
@@ -79,17 +78,29 @@ module.exports =
     logReloadedFiles: false
     logging: false
 
+  commandListenerDisposables: []
+
   activate: (state) ->
     if getProjectPackage()
-      atom.workspaceView.command 'package-manager:reload-project-package', => @reloadProjectPackage()
+      atom.commands.add 'atom-workspace', 'package-manager:reload-project-package', => @reloadProjectPackage()
 
-    atom.workspaceView.command 'package-manager:enable-package', => @openEnablePackageMenu()
-    atom.workspaceView.command 'package-manager:disable-package', => @openDisablePackageMenu()
-    atom.workspaceView.command 'package-manager:reload-package', => @openReloadPackageMenu()
-    atom.workspaceView.command 'package-manager:package-settings', => @openPackageSettingsMenu()
+    disposable = atom.commands.add 'atom-workspace', 'package-manager:enable-package', => @openEnablePackageMenu()
+    @commandListenerDisposables.push disposable
+
+    disposable = atom.commands.add 'atom-workspace', 'package-manager:disable-package', => @openDisablePackageMenu()
+    @commandListenerDisposables.push disposable
+
+    disposable = atom.commands.add 'atom-workspace', 'package-manager:reload-package', => @openReloadPackageMenu()
+    @commandListenerDisposables.push disposable
+
+    disposable = atom.commands.add 'atom-workspace', 'package-manager:package-settings', => @openPackageSettingsMenu()
+    @commandListenerDisposables.push disposable
 
 
   deactivate: ->
+    for disposable in @commandListenerDisposables
+      disposable.dispose()
+    @commandListenerDisposables = []
 
   reloadProjectPackage: ->
     pack = getProjectPackage()
