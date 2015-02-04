@@ -65,6 +65,14 @@ PackageManagerCommands =
     atom.packages.disablePackage(packageName)
     console.log '[PackageManager] ', packageName, ' disabled.' if configGet('logging')
 
+  packageSettings: (packageName) ->
+    atom.workspace.open("atom://config").then ->
+      settingsViewEl = document.querySelector(".settings-view")
+      unless settingsViewEl
+        console.error '[PackageManager] Could not find settings view.'
+        return
+      settingsViewEl.spacePenView.showPanel(packageName, {back: "Packages"})
+
 
 module.exports =
   configDefaults:
@@ -78,6 +86,7 @@ module.exports =
     atom.workspaceView.command 'package-manager:enable-package', => @openEnablePackageMenu()
     atom.workspaceView.command 'package-manager:disable-package', => @openDisablePackageMenu()
     atom.workspaceView.command 'package-manager:reload-package', => @openReloadPackageMenu()
+    atom.workspaceView.command 'package-manager:package-settings', => @openPackageSettingsMenu()
 
 
   deactivate: ->
@@ -101,3 +110,9 @@ module.exports =
     PackageListView ?= require './package-list-view'
     new PackageListView getEnabledPackages(), (packageName) ->
       PackageManagerCommands.disablePackage(packageName)
+
+  openPackageSettingsMenu: ->
+    PackageListView ?= require './package-list-view'
+    allPackages = (name: n for n in atom.packages.getAvailablePackageNames())
+    new PackageListView allPackages, (packageName) ->
+      PackageManagerCommands.packageSettings(packageName)
