@@ -1,7 +1,7 @@
 {
   "name": "package-manager-commands",
   "main": "./lib/main",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Adds commands to enable/disable/reload a package from the command palette.",
   "repository": "https://github.com/Zren/atom-package-manager-commands",
   "license": "MIT",
