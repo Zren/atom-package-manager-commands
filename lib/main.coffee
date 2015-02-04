@@ -82,7 +82,8 @@ module.exports =
 
   activate: (state) ->
     if getProjectPackage()
-      atom.commands.add 'atom-workspace', 'package-manager:reload-project-package', => @reloadProjectPackage()
+      disposable = atom.commands.add 'atom-workspace', 'package-manager:reload-project-package', => @reloadProjectPackage()
+      @commandListenerDisposables.push disposable
 
     disposable = atom.commands.add 'atom-workspace', 'package-manager:enable-package', => @openEnablePackageMenu()
     @commandListenerDisposables.push disposable
