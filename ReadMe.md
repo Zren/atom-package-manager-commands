@@ -15,6 +15,9 @@ Commands
 * **Package Manager: Reload Package**
   Lists all loaded packages to reload.  
   `package-manager:reload-package`
+* **Package Manager: Package Settings**
+  List all packages to open the settings page for that particular package.  
+  `package-manager:package-settings`
 * **Package Manager: Reload Project Package**
   Quick access to reload the current package being worked on. This command is only visible if the project root matches the package path.  
   `package-manager:reload-project-package`
