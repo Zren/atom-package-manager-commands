@@ -9,15 +9,18 @@ class PackageListView extends SelectListView
     @toggle()
 
   toggle: ->
-    if @hasParent()
+    if @panel?.isVisible()
       @cancel()
     else
-      @attach()
+      @show()
 
   getFilterKey: ->
     'name'
 
-  attach: ->
+  show: ->
+    @panel ?= atom.workspace.addModalPanel(item: this)
+    @panel.show()
+
     @storeFocusedElement()
 
     items = []
@@ -26,8 +29,10 @@ class PackageListView extends SelectListView
     items = _.sortBy(items, 'name')
     @setItems(items)
 
-    atom.workspaceView.append(this)
     @focusFilterEditor()
+
+  hide: ->
+    @panel?.hide()
 
   viewForItem: ({name, description}) ->
     "<li>#{name}</li>"
@@ -35,3 +40,6 @@ class PackageListView extends SelectListView
   confirmed: ({name}) ->
     @cancel()
     @confirmedCallback(name)
+
+  cancelled: ->
+    @hide()
