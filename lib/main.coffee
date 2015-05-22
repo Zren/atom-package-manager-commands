@@ -74,9 +74,13 @@ PackageManagerCommands =
 
 
 module.exports =
-  configDefaults:
-    logReloadedFiles: false
-    logging: false
+  config:
+    logReloadedFiles:
+      type: 'boolean'
+      default: false
+    logging:
+      type: 'boolean'
+      default: false
 
   commandListenerDisposables: []
 
