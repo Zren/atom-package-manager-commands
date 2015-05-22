@@ -1,4 +1,4 @@
-SelectListView = require atom.packages.resourcePath + '/src/select-list-view'
+{SelectListView} = require atom.packages.resourcePath + '/node_modules/atom-space-pen-views'
 _ = require atom.packages.resourcePath + '/node_modules/underscore-plus'
 
 module.exports =
@@ -6,7 +6,7 @@ class PackageListView extends SelectListView
   initialize: (@packageList, @confirmedCallback) ->
     super
     @addClass('package-list overlay from-top')
-    @toggle()
+    @show()
 
   toggle: ->
     if @panel?.isVisible()
@@ -31,9 +31,6 @@ class PackageListView extends SelectListView
 
     @focusFilterEditor()
 
-  hide: ->
-    @panel?.hide()
-
   viewForItem: ({name, description}) ->
     "<li>#{name}</li>"
 
@@ -42,4 +39,4 @@ class PackageListView extends SelectListView
     @confirmedCallback(name)
 
   cancelled: ->
-    @hide()
+    @panel.destroy()
