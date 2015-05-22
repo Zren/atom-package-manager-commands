@@ -34,12 +34,11 @@ clearModuleCache = (modulePath) ->
 
 
 getProjectPackage = ->
-  return false unless atom.project.path
-  projectPath = atom.project.path.toLowerCase()
-  packagePaths = _.pluck atom.packages.getLoadedPackages(), 'path'
-  packagePath = _.find packagePaths, (packagePath) ->
-    return packagePath if packagePath.toLowerCase() is projectPath
-  return _.findWhere atom.packages.getLoadedPackages(), {path: packagePath}
+  return false unless atom.project.getDirectories().length > 0
+  projectPath = atom.project.getDirectories()[0].getPath().toLowerCase()
+  for pack in atom.packages.getLoadedPackages()
+    if pack.path.toLowerCase() is projectPath
+      return pack
 
 PackageManagerCommands =
   enablePackage: (packageName) ->
